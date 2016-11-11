@@ -1,0 +1,8 @@
+/vendor
+.env
+.idea/
+public/storage
+public/views
+public/js
+public/css
+public/build
