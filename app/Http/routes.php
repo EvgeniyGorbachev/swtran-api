@@ -30,15 +30,26 @@ $api->group(['middleware' => ['api', 'cors']], function ($api) {
 
 //protected API routes with JWT (must be logged in)
 $api->group(['middleware' => ['api', 'api.auth', 'cors']], function ($api) {
-    
-    //user registration
-    $api->post('user/register', 'Auth\AuthController@register');
-    
-    //get all users
-    $api->get('user', 'UserController@get');
+
+    $api->group(['middleware' => ['role:admin|manager|support']], function ($api) {
+        //get all users
+        $api->get('user', 'UserController@get');
+    });
+
+    $api->group(['middleware' => ['role:admin|manager']], function ($api) {
+        
+        //user registration
+        $api->post('user/register', 'Auth\AuthController@register');
+        
+        //create new role
+        $api->get('user/entrust', 'UserController@createEntrustEntity');
+    });
     
     //get all users roles
     $api->get('user/roles', 'UserController@getRoles');
+    
+    //login check for uniqueness
+    $api->post('user/check-login', 'UserController@checkLogin');
     
     //get personal data
     $api->get('user/personal', 'UserController@getPersonal');

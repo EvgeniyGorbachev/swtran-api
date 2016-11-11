@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Auth;
 use JWTAuth;
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -63,7 +64,6 @@ class AuthController extends Controller
         $user->personal_id = trim($request->personal_id);
         $user->email = trim(strtolower($request->email));
         $user->password = bcrypt($request->password);
-        $user->role_id = trim($request->role_id);
         $user->mobile_phone = trim($request->mobile_phone);
         $user->address = trim($request->address);
         $user->working_status = trim($request->working_status);
@@ -77,6 +77,9 @@ class AuthController extends Controller
         $user->hire_date = date("Y-m-d H:i:s", $request->hire_date);
         $user->term_date = date("Y-m-d H:i:s", $request->term_date);
         $user->save();
+
+        $role = Role::where('id','=',trim($request->role_id))->first();
+        $user->attachRole($role);
 
         $token = JWTAuth::fromUser($user);
 
