@@ -82,8 +82,8 @@ class UserController extends Controller
 //        $permission->save();
 
 //        attach permission to role
-//        $role = Role::where('name','=','admin')->first();
-//        $permission = Permission::where('id', '=', '2')->first();
+//        $role = Role::where('name','=','support')->first();
+//        $permission = Permission::where('id', '=', '1')->first();
 //        $role->attachPermission($permission);
 
     }
