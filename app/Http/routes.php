@@ -41,6 +41,9 @@ $api->group(['middleware' => ['api', 'api.auth', 'cors']], function ($api) {
         //user registration
         $api->post('user/register', 'Auth\AuthController@register');
         
+        //user registration
+        $api->post('user/upload', 'UserController@upload');
+        
         //create new role
         $api->get('user/entrust', 'UserController@createEntrustEntity');
     });

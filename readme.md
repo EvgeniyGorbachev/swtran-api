@@ -46,4 +46,7 @@ Thank you for contributing to this repository.
 Here are the guidelines:
 
 1. If you are adding/modifying backend functionality, make sure to include the appropriate `test`. Let me know if you need help writing the test.
+
+## Custom 
+Need create directory /public/img/documents - for save users photo
     

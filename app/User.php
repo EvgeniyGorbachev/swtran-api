@@ -28,11 +28,16 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get all of the posts for the country.
+     * Get all of the role for the user.
      */
     public function roles()
     {
         return $this->belongsToMany('App\Role');
+    }
+
+    public function documents()
+    {
+        return $this->hasOne('App\Document');
     }
     
     public function getRoleId()
