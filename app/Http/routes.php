@@ -35,6 +35,11 @@ $api->group(['middleware' => ['api', 'api.auth', 'cors']], function ($api) {
         //get all users
         $api->get('user', 'UserController@get');
     });
+    
+    $api->group(['middleware' => ['role:admin']], function ($api) {
+        //get all users
+        $api->delete('user/{user}', 'UserController@deleteUser');
+    });
 
     $api->group(['middleware' => ['role:admin|manager']], function ($api) {
         

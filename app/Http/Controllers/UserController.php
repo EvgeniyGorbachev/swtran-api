@@ -174,5 +174,12 @@ class UserController extends Controller
         $path =  public_path('img/documents/user/' . $user_id . '/' . $file_name);
         File::delete($path);
     }
+    
+    public function deleteUser(User $user){
+        $user->is_deleted = true;
+        if ($user->save()) {
+            return response()->success(compact('user'));
+        } 
+    }
 
 }

@@ -52,7 +52,7 @@ class AuthController extends Controller
             'email'      => 'required|email',
             'mobile_phone'      => 'required',
             'address'      => 'required|string|max:40',
-            'password'   => 'required|min:5',
+            'password'   => 'required|string|min:5',
             'working_status'   => 'integer',
             'cdl_experience'   => 'numeric',
             'doubles_experience'   => 'string|max:50',
