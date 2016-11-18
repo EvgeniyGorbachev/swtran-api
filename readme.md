@@ -1,4 +1,4 @@
-## swtran CRM
+# SWTRAN CRM
 ## Skeleton 
 https://github.com/jadjoubran/laravel5-angular-material-starter
 
@@ -8,5 +8,7 @@ https://github.com/jadjoubran/laravel5-angular-material-starter
 
 ## Run project
 npm install
+
 bower install
+
 gulp
