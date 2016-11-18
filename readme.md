@@ -1,4 +1,5 @@
 # SWTRAN CRM
+###API (Laravel 5.2)
 ## Skeleton 
 https://github.com/jadjoubran/laravel5-angular-material-starter
 
@@ -7,8 +8,15 @@ https://github.com/jadjoubran/laravel5-angular-material-starter
 [View Latest Docs](http://laravel-angular.readme.io/) for installation steps & tutorials.
 
 ## Run project
-npm install
+composer install
 
-bower install
+create .env file
 
-gulp
+import dataBase
+
+set www-data user to folder /storage
+
+set 755 permissions to folder /storage
+
+## Info 
+root directive /public
