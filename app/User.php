@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
+use Illuminate\Http\Request;
 
 
 class User extends Authenticatable
@@ -38,6 +39,34 @@ class User extends Authenticatable
     public function documents()
     {
         return $this->hasOne('App\Document');
+    }
+
+    public function scopeJoinRole($query)
+    {
+        return $query->join('role_user', 'role_user.user_id', '=', 'users.id')
+        ->join('roles', 'roles.id', '=', 'role_user.role_id');
+    }
+
+    public function scopeGetAllWhere($query, $request)
+    {
+        $searchByName =  $request->input('searchByName');
+
+        $sortAsc =  $request->input('sortAsc');
+        $sortDesc =  $request->input('sortDesc');
+
+        $query->joinRole()
+            ->where('is_deleted', '<>', 1)
+            ->select('users.*', 'roles.display_name as role_label', 'roles.id as role_id');
+
+        if ($request->has('searchByName')) {
+            $query->where('name', 'LIKE', '%' . $searchByName . '%');
+        } elseif ($request->has('sortAsc')) {
+            $query->orderBy($sortAsc, 'asc');
+        } elseif ($request->has('sortDesc')) {
+            $query->orderBy($sortDesc, 'desc');
+        }
+
+        return $query->get();
     }
     
     public function getRoleId()

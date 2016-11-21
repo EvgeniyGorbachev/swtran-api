@@ -16,26 +16,7 @@ class UserController extends Controller
 {
     public function get(Request $request)
     {
-        $searchByName =  $request->input('searchByName');
-
-        $sortAsc =  $request->input('sortAsc');
-        $sortDesc =  $request->input('sortDesc');
-
-        $users = User::where('is_deleted', '<>', 1)
-            ->join('role_user', 'role_user.user_id', '=', 'users.id')
-            ->join('roles', 'roles.id', '=', 'role_user.role_id')
-            ->select('users.*', 'roles.display_name as role_label', 'roles.id as role_id');
-
-        if ($request->has('searchByName')) {
-            $users = $users->where('name', 'LIKE', '%' . $searchByName . '%');
-        } elseif ($request->has('sortAsc')) {
-            $users = $users->orderBy($sortAsc, 'asc');
-        } elseif ($request->has('sortDesc')) {
-            $users = $users->orderBy($sortDesc, 'desc');
-        }
-
-        $users = $users->get();
-
+        $users = User::getAllWhere($request);
         return response()->success(compact('users'));
     }
 
