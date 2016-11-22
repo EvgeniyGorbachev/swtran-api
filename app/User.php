@@ -5,11 +5,14 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 use Illuminate\Http\Request;
+use App\QueryBuilderByParamsTrait;
+
 
 
 class User extends Authenticatable
 {
     use EntrustUserTrait;
+    use QueryBuilderByParamsTrait;
     /**
      * The attributes that are mass assignable.
      *
@@ -49,22 +52,10 @@ class User extends Authenticatable
 
     public function scopeGetAllWhere($query, $request)
     {
-        $searchByName =  $request->input('searchByName');
-
-        $sortAsc =  $request->input('sortAsc');
-        $sortDesc =  $request->input('sortDesc');
-
         $query->joinRole()
             ->where('is_deleted', '<>', 1)
             ->select('users.*', 'roles.display_name as role_label', 'roles.id as role_id');
-
-        if ($request->has('searchByName')) {
-            $query->where('name', 'LIKE', '%' . $searchByName . '%');
-        } elseif ($request->has('sortAsc')) {
-            $query->orderBy($sortAsc, 'asc');
-        } elseif ($request->has('sortDesc')) {
-            $query->orderBy($sortDesc, 'desc');
-        }
+        $query = $this->useParams($query, $request, ['users', 'roles']);
 
         return $query->get();
     }
