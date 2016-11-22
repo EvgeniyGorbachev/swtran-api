@@ -16,7 +16,7 @@ trait QueryBuilderByParamsTrait {
         $params = $request->all();
        
         //sorting | ?sort=-userName -> sort desc, sort=userName -> sort asc
-        if ($sortField) {
+        if ($sortField && $sortField != 'null') {
             $order = $sortField{0};
             if ($order == '-') {
                 $sortField = substr($sortField, 1);
@@ -28,7 +28,7 @@ trait QueryBuilderByParamsTrait {
 
         //search by param | ?userName=Zhenya -> use LIKE operator %Zhneya%
         foreach ($params as $paramName => $paramValue) {
-            if (!$this->isConstantParameters($paramName)) {
+            if (!$this->isConstantParameters($paramName) && $paramValue != 'null') {
                 $query->where($this->getFullFieldName($paramName), 'LIKE', '%' . $paramValue . '%');
             }
         }
