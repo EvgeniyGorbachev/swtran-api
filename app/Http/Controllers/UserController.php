@@ -7,8 +7,8 @@ use App\Permission;
 use Storage;
 use File;
 use App\User;
-use App\Role;
 use App\Document;
+use App\Role;
 use DB;
 use Illuminate\Http\Request;
 
@@ -83,7 +83,7 @@ class UserController extends Controller
                 //save file on disk
                 if ($request->file('file')->move($pathUserPersonal, $full_file_name)){
                     //save file to database
-                    $this->saveDocument($full_file_name, $file_type, $user_id);
+                    Document::saveDocument($full_file_name, $file_type, $user_id);
                 } else {
                     return response()->error('Could not save file', 403);
                 }
@@ -94,6 +94,13 @@ class UserController extends Controller
             }
         } else {
             return response()->error('Its not valid file', 403);
+        }
+    }
+
+    public function deleteUser(User $user){
+        $user->is_deleted = true;
+        if ($user->save()) {
+            return response()->success(compact('user'));
         }
     }
 
@@ -123,44 +130,6 @@ class UserController extends Controller
 //        $permission = Permission::where('id', '=', '1')->first();
 //        $role->attachPermission($permission);
 
-    }
-
-    public function saveDocument($file_name, $file_type, $user_id)
-    {
-        $userDocument = User::find($user_id)->documents()->first();
-
-        if ($userDocument) {
-            $oldFileName = $userDocument->{$file_type};
-            $userDocument->{$file_type} =  $file_name;
-
-            //resave new file name
-            $userDocument->save();
-
-            //delete old file from directiv
-            if ($oldFileName) {
-                $this->deleteDocument($oldFileName, $user_id);
-            }
-        } else {
-            $newDocument = new Document();
-            $newDocument->{$file_type} = $file_name;
-            $newDocument->user_id = $user_id;
-
-            if (!$newDocument->save()) {
-                return response()->error('Invalid file type', 403);
-            }
-        }
-    }
-
-    public function deleteDocument($file_name, $user_id){
-        $path =  public_path('img/documents/user/' . $user_id . '/' . $file_name);
-        File::delete($path);
-    }
-    
-    public function deleteUser(User $user){
-        $user->is_deleted = true;
-        if ($user->save()) {
-            return response()->success(compact('user'));
-        } 
     }
 
 }

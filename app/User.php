@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 use Illuminate\Http\Request;
 use App\QueryBuilderByParamsTrait;
-
+use App\Document;
 
 
 class User extends Authenticatable
