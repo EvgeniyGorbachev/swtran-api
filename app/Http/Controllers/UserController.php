@@ -103,6 +103,43 @@ class UserController extends Controller
             return response()->success(compact('user'));
         }
     }
+    
+    public function getUser(User $user){
+        $user = $user->getFullData();
+        return response()->success(compact('user'));
+    }
+    
+    public function editUser(Request $request){
+
+        $this->validate($request, [
+            'name'       => 'required|max:20',
+            'surname'       => 'max:20',
+            'nick_name'       => 'max:20',
+            'personal_id'=> 'required|integer',
+            'role_id'=> 'required',
+            'email'      => 'required|email',
+            'mobile_phone'      => 'required',
+            'address'      => 'required|string|max:40',
+            'working_status'   => 'integer',
+            'cdl_experience'   => 'numeric',
+            'doubles_experience'   => 'string|max:50',
+            'term_reason'   => 'string|max:50',
+            'veteran'   => 'string|max:50',
+            'dl_exp_date'   => 'digits:10',
+            'mc_exp_date'   => 'digits:10',
+            'hire_date'   => 'digits:10',
+            'term_date'   => 'digits:10',
+        ]);
+        
+        $user = User::find(trim($request->id))->update($request->all());
+
+        if ($user) {
+            return response()->success(compact('user'));
+        } else {
+            return response()->error('It is impossible to save the user', 500);
+        }
+        
+    }
 
     public function createEntrustEntity(Request $request)
     {
@@ -120,14 +157,14 @@ class UserController extends Controller
 
 //        create permission
 //        $permission = new Permission();
-//        $permission->name         = 'create-user';
-//        $permission->display_name = 'Create new user'; // optional
-//        $permission->description  = 'Can create new user'; // optional
+//        $permission->name         = 'edit-user';
+//        $permission->display_name = 'Edit new user'; // optional
+//        $permission->description  = 'Can edit new user'; // optional
 //        $permission->save();
 
 //        attach permission to role
-//        $role = Role::where('name','=','support')->first();
-//        $permission = Permission::where('id', '=', '1')->first();
+//        $role = Role::where('name','=','admin')->first();
+//        $permission = Permission::where('id', '=', '4')->first();
 //        $role->attachPermission($permission);
 
     }

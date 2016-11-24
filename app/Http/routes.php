@@ -46,6 +46,12 @@ $api->group(['middleware' => ['api', 'api.auth', 'cors']], function ($api) {
         //user registration
         $api->post('user/register', 'Auth\AuthController@register');
         
+        //user by id
+        $api->get('user/{user}', 'UserController@getUser');    
+        
+        //edit user
+        $api->put('user', 'UserController@editUser');
+        
         //user registration
         $api->post('user/upload', 'UserController@upload');
         
@@ -54,13 +60,13 @@ $api->group(['middleware' => ['api', 'api.auth', 'cors']], function ($api) {
     });
     
     //get all users roles
-    $api->get('user/roles', 'UserController@getRoles');
+    $api->get('user/info/roles', 'UserController@getRoles');
     
     //login check for uniqueness
     $api->post('user/check-login', 'UserController@checkLogin');
     
     //get personal data
-    $api->get('user/personal', 'UserController@getPersonal');
+    $api->get('user/info/personal', 'UserController@getPersonal');
 });
 
 

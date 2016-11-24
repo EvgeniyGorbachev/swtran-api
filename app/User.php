@@ -19,7 +19,21 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'personal_id'
+        'name', 
+        'email', 
+        'surname', 
+        'nick_name', 
+        'mobile_phone', 
+        'address', 
+        'working_status', 
+        'cdl_experience', 
+        'doubles_experience',
+        'term_reason',
+        'veteran',
+        'dl_exp_date',
+        'mc_exp_date',
+        'hire_date',
+        'term_date'
     ];
 
     /**
@@ -42,6 +56,57 @@ class User extends Authenticatable
     public function documents()
     {
         return $this->hasOne('App\Document');
+    }
+
+    public function getDlExpDateAttribute($value)
+    {
+        return $this->formatDateToGet($value);
+    }
+
+    public function getMcExpDateAttribute($value)
+    {
+        return $this->formatDateToGet($value);
+    }
+
+    public function getHireDateAttribute($value)
+    {
+        return $this->formatDateToGet($value);
+    }
+
+    public function getTermDateAttribute($value)
+    {
+        return $this->formatDateToGet($value);
+    }
+    
+    public function formatDateToGet($value)
+    {
+        return ($value == '0000-00-00 00:00:00')? 0: strtotime($value);
+    } 
+    
+
+    public function setDlExpDateAttribute($value)
+    {
+        $this->attributes['dl_exp_date'] = $this->formatDateToSet($value);
+    }
+
+    public function setMcExpDateAttribute($value)
+    {
+        $this->attributes['mc_exp_date'] = $this->formatDateToSet($value);
+    }
+
+    public function setHireDateAttribute($value)
+    {
+        $this->attributes['hire_date'] = $this->formatDateToSet($value);
+    }
+
+    public function setTermDateAttribute($value)
+    {
+        $this->attributes['term_date'] = $this->formatDateToSet($value);
+    }
+    
+    public function formatDateToSet($value)
+    {
+        return ($value)? date("Y-m-d H:i:s", $value): null;
     }
 
     public function scopeJoinRole($query)
