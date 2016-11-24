@@ -28,6 +28,60 @@ class UserController extends Controller
         return response()->success(compact('user'));
     }
 
+    public function register(Request $request)
+    {
+        $currentUser = JWTAuth::parseToken()->authenticate();
+
+        if (!$currentUser->canSetRole(trim($request->role_id))) {
+            return response()->error('Could not create user with such a role', 403);
+        }
+
+        $this->validate($request, [
+            'name'       => 'required|max:20',
+            'surname'       => 'max:20',
+            'nick_name'       => 'max:20',
+            'personal_id'=> 'required|integer|unique:users',
+            'role_id'=> 'required',
+            'email'      => 'required|email',
+            'mobile_phone'      => 'required',
+            'address'      => 'required|string|max:40',
+            'password'   => 'required|string|min:5',
+            'working_status'   => 'integer',
+            'cdl_experience'   => 'numeric',
+            'doubles_experience'   => 'string|max:50',
+            'term_reason'   => 'string|max:50',
+            'veteran'   => 'string|max:50',
+            'dl_exp_date'   => 'digits:10',
+            'mc_exp_date'   => 'digits:10',
+            'hire_date'   => 'digits:10',
+            'term_date'   => 'digits:10',
+        ]);
+
+        $user = new User;
+        $user->name = trim($request->name);
+        $user->surname = trim($request->surname);
+        $user->nick_name = trim($request->nick_name);
+        $user->personal_id = trim($request->personal_id);
+        $user->email = trim(strtolower($request->email));
+        $user->password = bcrypt($request->password);
+        $user->mobile_phone = trim($request->mobile_phone);
+        $user->address = trim($request->address);
+        $user->working_status = trim($request->working_status);
+        $user->cdl_experience = trim($request->cdl_experience);
+        $user->doubles_experience = trim($request->doubles_experience);
+        $user->term_reason = trim($request->term_reason);
+        $user->veteran = trim($request->veteran);
+
+        $user->save();
+
+        $role = Role::where('id','=',trim($request->role_id))->first();
+        $user->attachRole($role);
+
+        $token = JWTAuth::fromUser($user);
+
+        return response()->success(compact('user', 'token'));
+    }
+
     public function getRoles(Request $request)
     {
         $userRoles = Role::all();
@@ -130,12 +184,12 @@ class UserController extends Controller
             'hire_date'   => 'digits:10',
             'term_date'   => 'digits:10',
         ]);
-        
+
         $user = User::find(trim($request->id));
         $currentUser = JWTAuth::parseToken()->authenticate();
-        
+
         //update role
-        if (!$currentUser->isChangingRoleForbidden($request)) {
+        if ($currentUser->canSetRole(trim($request->role_id))) {
             $user->roles()->sync([trim($request->role_id)]);
         } else {
             return response()->error('Could not update user with such a role', 403);

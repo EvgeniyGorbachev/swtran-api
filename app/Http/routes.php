@@ -44,7 +44,7 @@ $api->group(['middleware' => ['api', 'api.auth', 'cors']], function ($api) {
     $api->group(['middleware' => ['role:admin|manager']], function ($api) {
         
         //user registration
-        $api->post('user/register', 'Auth\AuthController@register');
+        $api->post('user', 'UserController@register');
         
         //user by id
         $api->get('user/{user}', 'UserController@getUser');    
