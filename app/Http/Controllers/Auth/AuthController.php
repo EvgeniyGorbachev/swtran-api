@@ -36,10 +36,9 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
+        $currentUser = JWTAuth::parseToken()->authenticate();
         
-        //only admin can create admin(1) and manager(2) roles
-        if (!$user->hasRole('admin') && ($request->role_id == 1 || $request->role_id == 2)) {
+        if ($currentUser->isChangingRoleForbidden($request)) {
             return response()->error('Could not create user with such a role', 403);
         }
         

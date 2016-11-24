@@ -152,4 +152,10 @@ class User extends Authenticatable
         return $this;
     }
 
+    public function isChangingRoleForbidden(Request $request)
+    {
+        //only admin can create admin(1) and manager(2) roles
+        return !$this->hasRole('admin') && ($request->role_id == 1 || $request->role_id == 2);
+    }
+
 }

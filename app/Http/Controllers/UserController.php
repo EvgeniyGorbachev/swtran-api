@@ -131,14 +131,24 @@ class UserController extends Controller
             'term_date'   => 'digits:10',
         ]);
         
-        $user = User::find(trim($request->id))->update($request->all());
+        $user = User::find(trim($request->id));
+        $currentUser = JWTAuth::parseToken()->authenticate();
+        
+        //update role
+        if (!$currentUser->isChangingRoleForbidden($request)) {
+            $user->roles()->sync([trim($request->role_id)]);
+        } else {
+            return response()->error('Could not update user with such a role', 403);
+        }
 
+        $user = $user->update($request->all());
+        
         if ($user) {
             return response()->success(compact('user'));
         } else {
             return response()->error('It is impossible to save the user', 500);
         }
-        
+
     }
 
     public function createEntrustEntity(Request $request)
